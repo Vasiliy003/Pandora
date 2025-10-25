@@ -1,0 +1,162 @@
+/* theme_login.css — общий стиль для трёх тем (social / bank / ecom) */
+:root{
+  --radius: 12px;
+  --card-shadow: 0 10px 30px rgba(2,6,23,0.12);
+  --font-base: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --muted: #6b7280;
+}
+
+/* Сброс */
+* { box-sizing: border-box; }
+html,body{ height:100%; margin:0; font-family:var(--font-base); background:#f3f4f6; color:#0f172a; }
+
+/* Центрирование страницы */
+.page {
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+}
+
+/* Карточка формы */
+.auth-card {
+  width: 100%;
+  max-width: 980px;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 28px;
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  padding: 28px;
+  border: 1px solid rgba(2,6,23,0.04);
+}
+
+/* Левый блок — бренд/инфо */
+.info {
+  padding: 6px 8px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  gap:12px;
+}
+.brand {
+  display:flex;
+  gap:14px;
+  align-items:center;
+}
+.logo {
+  width:62px; height:62px; border-radius:10px;
+  display:flex; align-items:center; justify-content:center;
+  font-weight:800; color:#fff; font-size:20px;
+  box-shadow: 0 8px 20px rgba(2,6,23,0.08);
+}
+.h1 {
+  margin:0; font-size:20px;
+}
+.lead { margin:0; color:var(--muted); font-size:14px; line-height:1.4; }
+
+/* Правая колонка — форма */
+.panel {
+  background: rgba(255,255,255,0.9);
+  padding:18px;
+  border-radius:10px;
+  border:1px solid rgba(2,6,23,0.03);
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+
+/* Заголовок формы */
+.panel h2 { margin:0; font-size:18px; }
+.panel p.muted { margin:0; color:var(--muted); font-size:13px; }
+
+/* Форма */
+.form-row { display:flex; flex-direction:column; gap:6px; margin-top:8px; }
+.input {
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid rgba(2,6,23,0.06);
+  font-size:15px;
+  outline:none;
+}
+.input:focus {
+  box-shadow: 0 8px 20px rgba(2,6,23,0.06);
+  border-color: rgba(0,0,0,0.12);
+}
+
+/* Кнопки */
+.actions { display:flex; gap:10px; margin-top:8px; align-items:center; }
+.btn, .btn-flag {
+  padding:10px 14px;
+  border-radius:10px;
+  font-weight:700;
+  cursor:pointer;
+  border: none;
+}
+.btn.secondary {
+  background: transparent;
+  color:var(--muted);
+  border:1px solid rgba(2,6,23,0.06);
+}
+
+/* Сообщение от SQL */
+.message {
+  margin-top:10px;
+  padding:10px;
+  border-radius:8px;
+  background:#fff8;
+  font-family:monospace;
+  white-space:pre-wrap;
+  border:1px solid rgba(2,6,23,0.04);
+}
+
+.flag-form {
+    margin-top: 20px;
+    text-align: left;
+}
+
+.flag-form input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+}
+
+/* Таймер */
+.timer {
+  margin-top:8px;
+  text-align:right;
+  color:var(--muted);
+  font-weight:700;
+}
+
+/* Mobile */
+@media (max-width:980px){
+  .auth-card { grid-template-columns: 1fr; padding:18px; gap:18px; }
+  .logo { width:48px; height:48px; font-size:16px; }
+}
+
+/* ===== Темы ===== */
+
+/* Social (яркий, фиолетово-розовый акцент) */
+body.social-theme .logo { background: linear-gradient(135deg,#8b5cf6,#ec4899); }
+body.social-theme .btn.primary { background: linear-gradient(90deg,#8b5cf6,#ec4899); color:#fff; box-shadow:0 8px 28px rgba(139,92,246,0.12); }
+body.social-theme .info { background: linear-gradient(180deg, rgba(139,92,246,0.03), rgba(236,72,153,0.02)); border-radius:10px; padding:16px; }
+body.social-theme .task { background: linear-gradient(90deg,#fff,#fff); color:#111; padding:12px; border-radius:8px; border:1px dashed rgba(139,92,246,0.08); }
+
+/* Bank (зеленый строгий) */
+body.bank-theme .logo { background: linear-gradient(135deg,#059669,#10b981); }
+body.bank-theme .btn.primary { background: linear-gradient(90deg,#059669,#10b981); color:#fff; box-shadow:0 8px 28px rgba(5,150,105,0.12); }
+body.bank-theme .info { background: linear-gradient(180deg, rgba(5,150,105,0.03), rgba(16,185,129,0.02)); border-radius:10px; padding:16px; }
+body.bank-theme .task { background:#fcfffb; color:#0b3a2d; padding:12px; border-radius:8px; border:1px dashed rgba(5,150,105,0.08); }
+
+/* E-commerce (оранжево-песочный) */
+body.ecom-theme .logo { background: linear-gradient(135deg,#f97316,#f59e0b); }
+body.ecom-theme .btn.primary { background: linear-gradient(90deg,#f97316,#f59e0b); color:#fff; box-shadow:0 8px 28px rgba(249,115,22,0.12); }
+body.ecom-theme .info { background: linear-gradient(180deg, rgba(249,115,22,0.03), rgba(245,158,11,0.02)); border-radius:10px; padding:16px; }
+body.ecom-theme .task { background:#fffaf0; color:#663c00; padding:12px; border-radius:8px; border:1px dashed rgba(249,115,22,0.08); }

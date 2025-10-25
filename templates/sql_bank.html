@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Банк — Вход</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='sql_style.css') }}">
+</head>
+<body class="bank-theme">
+  <div class="page">
+    <div class="auth-card">
+      <div class="info">
+        <div class="brand">
+          <div class="logo">RB</div>
+          <div>
+            <div class="h1">RiversBank Portal</div>
+            <div class="lead">Тренировочная среда — найдите внутренние заметки и данные клиентов.</div>
+          </div>
+        </div>
+
+        <div class="task">{{ task|safe }}</div>
+        <form method="get" class="flag-form">
+          <label for="flag">Введите найденный флаг:</label>
+          <input type="text" id="flag" name="flag" placeholder="FLAG{...}" required>
+          <button type="submit" class="btn-flag">Отправить</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>Вход в клиентский кабинет</h2>
+
+        <form method="post">
+          <div class="form-row">
+            <label>Логин</label>
+            <input class="input" name="username" autocomplete="off" placeholder="user123">
+          </div>
+          <div class="form-row">
+            <label>Пароль</label>
+            <input class="input" name="password" autocomplete="off" placeholder="password">
+          </div>
+
+          <input type="hidden" name="time" value="{{ start_time }}">
+
+          <div class="actions">
+            <button class="btn primary" type="submit">Войти</button>
+          </div>
+        </form>
+
+        {% if message %}
+          <div class="message">{{ message }}</div>
+        {% endif %}
+
+        <div class="timer">⏱ Осталось: <span id="timer">00:00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="static/timer.js"></script>
+</body>
+</html>

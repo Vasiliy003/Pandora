@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Логин</title>
+</head>
+<body>
+    <h1>Форма входа</h1>
+    <form method="post">
+        <input type="text" name="username" placeholder="Логин"><br>
+        <input type="password" name="password" placeholder="Пароль"><br>
+        <input type="submit" value="Войти">
+    </form>
+
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
+</body>
+</html>

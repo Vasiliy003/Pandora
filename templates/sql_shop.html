@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <title>Магазин — Вход</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='sql_style.css') }}">
+</head>
+<body class="ecom-theme">
+  <div class="page">
+    <div class="auth-card">
+      <div class="info">
+        <div class="brand">
+          <div class="logo">MK</div>
+          <div>
+            <div class="h1">Marketly</div>
+            <div class="lead">Учебная витрина — найдите скрытые заметки в заказах или данные покупателей.</div>
+          </div>
+        </div>
+
+        <div class="task">{{ task|safe }}</div>
+        <form method="get" class="flag-form">
+          <label for="flag">Введите найденный флаг:</label>
+          <input type="text" id="flag" name="flag" placeholder="FLAG{...}" required>
+          <button type="submit" class="btn-flag">Отправить</button>
+        </form>
+      </div>
+
+      <div class="panel">
+        <h2>Вход в личный кабинет</h2>
+
+        <form method="post">
+          <div class="form-row">
+            <label>Email / Логин</label>
+            <input class="input" name="username" autocomplete="off" placeholder="email@example.com">
+          </div>
+          <div class="form-row">
+            <label>Пароль</label>
+            <input class="input" name="password" autocomplete="off" placeholder="password">
+          </div>
+
+          <input type="hidden" name="time" value="{{ start_time }}">
+
+          <div class="actions">
+            <button class="btn primary" type="submit">Войти</button>
+            <a class="btn secondary" href="{{ url_for('index') }}">Отмена</a>
+          </div>
+        </form>
+
+        {% if message %}
+          <div class="message">{{ message }}</div>
+        {% endif %}
+
+        <div class="timer">⏱ Осталось: <span id="timer">00:00</span></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="static/timer.js"></script>
+</body>
+</html>

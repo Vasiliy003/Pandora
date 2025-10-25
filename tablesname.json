@@ -1,0 +1,11 @@
+{
+    "userstable": ["users", "customers", "user", "logins", "qwertys"], 
+    "poststable": ["posts", "witing", "submissions"],
+    "messagestable": ["messages", "communications", "notice", "texts", "letters"],
+    "accountstable": ["accounts", "account", "bills", "tabs", "profiles"],
+    "transactionstable": ["transactions", "deals", "sales", "exchanges"],
+    "admin_notes_table": ["admin_notes", "admin", "notes", "secret_notes"],
+    "productstable": ["products", "goods", "product", "merchandise", "produce"],
+    "orderstable": ["orders", "requests", "purchases"],
+    "reviewstable": ["reviews", "feedbacks", "opinions", "evaluations", "commentary"]
+}
