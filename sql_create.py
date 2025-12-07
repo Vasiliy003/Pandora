@@ -165,6 +165,7 @@ def create_social_template(session_id):
         result["flag"] = secret
         result["flag_location"] = f"messages.body (message_id = {target_msg})"
 
+    cursor.close()
     connection.close()
     return result
 
@@ -181,7 +182,7 @@ def create_bank_template(session_id):
     cursor.executescript('''
     CREATE TABLE IF NOT EXISTS ''' + userstable + ''' (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        name TEXT,
+        username TEXT,
         login TEXT,
         password TEXT
     );
@@ -213,7 +214,7 @@ def create_bank_template(session_id):
         login = f"user{rnd_string(4)}"
         password = rnd_password()
         users.append((name, login, password))
-    cursor.executemany(f"INSERT INTO {userstable} (name, login, password) VALUES (?, ?, ?);", users)
+    cursor.executemany(f"INSERT INTO {userstable} (username, login, password) VALUES (?, ?, ?);", users)
     connection.commit()
 
     #accounts
@@ -237,7 +238,7 @@ def create_bank_template(session_id):
     task_types = ["get_customer_password", "get_account_number", "get_admin_note"]
     task_type = random.choice(task_types)
 
-    cursor.execute(f"SELECT id, name FROM {userstable};")
+    cursor.execute(f"SELECT id, username FROM {userstable};")
     users_list = cursor.fetchall()
 
     cursor.execute(f"SELECT id FROM {accountstable};")
@@ -272,7 +273,7 @@ def create_bank_template(session_id):
         customer_id = cursor.fetchone()[0]
         cursor.execute(f"SELECT account_number FROM {accountstable} WHERE customer_id = ?;", (customer_id,))
         accnumber = cursor.fetchone()[0]
-        cursor.execute(f"SELECT name FROM {userstable} WHERE id = ?;", (customer_id,))
+        cursor.execute(f"SELECT username FROM {userstable} WHERE id = ?;", (customer_id,))
         customer_name = cursor.fetchone()[0]
 
         result["task_descr"] = f"Узнать номер счёта клиента {customer_name}."
@@ -288,10 +289,11 @@ def create_bank_template(session_id):
         result["flag"] = secret_text
         result["flag_location"] = f"admin_notes.note (id={target_note})"
 
+    cursor.close()
     connection.close()
     return result
 
-#рандомный магазин
+#рандомный шаблон магазина
 def create_shop_template(session_id):
     connection = sqlite3.connect(f'db/temp/{session_id}.db')
     cursor = connection.cursor()
@@ -304,7 +306,7 @@ def create_shop_template(session_id):
     cursor.executescript('''
     CREATE TABLE IF NOT EXISTS ''' + userstable + ''' (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        email TEXT,
+        username TEXT,
         password TEXT NOT NULL,
         bio TEXT
     );
@@ -331,7 +333,7 @@ def create_shop_template(session_id):
 
     n_users = random.randint(3, 7)
     for i in range(n_users):
-        cursor.execute(f"INSERT INTO {userstable} (email, password, bio) VALUES (?, ?, ?);",
+        cursor.execute(f"INSERT INTO {userstable} (username, password, bio) VALUES (?, ?, ?);",
                        (f"{rnd_string(6)}@yandex.ru", rnd_password(), rnd_sentence(8)))
     connection.commit()
 
@@ -356,7 +358,7 @@ def create_shop_template(session_id):
     task_types = ["find_customer_password", "find_order_note", "find_product_price"]
     task_type = random.choice(task_types)
 
-    cursor.execute(f"SELECT id, email FROM {userstable};")
+    cursor.execute(f"SELECT id, username FROM {userstable};")
     users_list = cursor.fetchall()
     cursor.execute(f"SELECT id FROM {productstable};")
     products_list = [r[0] for r in cursor.fetchall()]
@@ -389,7 +391,7 @@ def create_shop_template(session_id):
         connection.commit()
         
         result["task_descr"] = f"Найти секретную метку в заметке заказа id = {target_order}."
-        result["flag"] = target_order
+        result["flag"] = secret_text
         result["flag_location"] = f"orders.order_notes (order_id={target_order})"
     elif task_type == "find_product_price":
         target_product = random.choice(products_list)
@@ -400,6 +402,7 @@ def create_shop_template(session_id):
         result["flag"] = target_price
         result["flag_location"] = f"products.price (product_id={target_product})"
     
+    cursor.close()
     connection.close()
     return result
 
@@ -409,5 +412,3 @@ if __name__ == '__main__':
         db_path = os.path.join(temp_path, db_name)
         os.remove(db_path)
     print(create_shop_template(session_id='test'))
-
-    

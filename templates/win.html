@@ -1,13 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Победа</title>
+  <meta charset="utf-8">
+  <title>Победа!</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='result.css') }}">
 </head>
-<body>
-    ПОБЕДА
-
-    <a href="/">На главную</a>
+<body class="win">
+  <div class="result-box">
+    <h1>🎉 Победа!</h1>
+    <p>Вы успешно выполнили задание и нашли флаг.</p>
+    <a href="/" class="btn">На главную</a>
+  </div>
 </body>
 </html>

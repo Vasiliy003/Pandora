@@ -46,8 +46,15 @@
           </div>
         </form>
 
+        <div id="out"></div>
+
+        <script>
+          // уязвимый кусок: вставляем location.hash в DOM без очистки
+          document.getElementById('out').innerHTML = decodeURIComponent(location.hash.substring(1));
+        </script>
+
         {% if message %}
-          <div class="message">{{ message }}</div>
+          <div class="message">{{ message|safe }}</div>
         {% endif %}
 
         <div class="timer">⏱ Осталось: <span id="timer">00:00</span></div>
@@ -56,5 +63,6 @@
   </div>
 
   <script src="static/timer.js"></script>
+  
 </body>
 </html>

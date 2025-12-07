@@ -1,13 +1,15 @@
-<!DOCTYPE html>
-<html lang="en">
+<!doctype html>
+<html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Проигрыш</title>
+  <meta charset="utf-8">
+  <title>Неудача</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='result.css') }}">
 </head>
-<body>
-    ПРОИГРАЛ АХАХАХАХАХАХ
-
-    <a href="/">На главную</a>
+<body class="lose">
+  <div class="result-box">
+    <h1>😔 Неудача</h1>
+    <p>Время кончилось или задание не выполнено. Попробуйте ещё раз.</p>
+    <a href="/" class="btn">Попробовать снова</a>
+  </div>
 </body>
 </html>

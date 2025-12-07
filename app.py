@@ -2,9 +2,10 @@ from flask import Flask, render_template, request, jsonify, session, redirect, u
 from datetime import datetime
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy import select, exc
-import uuid, random, time, os, threading
+import uuid, random, time, os, threading, string
 import sqlite3
 from sql_create import create_social_template, create_bank_template, create_shop_template
+from stored_create import create_stored_template
 
 from sessions_database import engine, SessionBase
 
@@ -49,13 +50,38 @@ def getRandFlag():
     return "".join(chr(random.randint(35, 125)) for i in range(length)) + chr(random.randint(65, 90)) + "".join(chr(random.randint(35, 125)) for i in range(length))
 
 def closeSession(session_id):
-    session.pop(session_id, None)
+    # убрать ключ из flask-session (если установлен)
+    session.pop("session_id", None)
 
-    os.remove(f'db/temp/{session_id}.db')
+    db_path = f'db/temp/{session_id}.db'
+
+    # Попытаться удалить файл с несколькими попытками — Windows не разрешает удалять
+    # файл, пока на него есть открытые дескрипторы. Повторяем с небольшими паузами.
+    for attempt in range(6):
+        try:
+            # принудительный сборщик мусора на случай, если где-то остались ссылки
+            import gc
+            gc.collect()
+            if os.path.exists(db_path):
+                os.remove(db_path)
+            break
+        except PermissionError as e:
+            if attempt == 5:
+                # не удалось удалить — логируем и продолжаем удаление записи из БД
+                print(f"closeSession: не удалось удалить {db_path}: {e}")
+            time.sleep(0.15)
+        except FileNotFoundError:
+            break
+        except Exception as e:
+            print(f"closeSession: unexpected error removing {db_path}: {e}")
+            break
+
     object_to_delete = get_by_sessionid(session_id)
-    tasksession.delete(object_to_delete)
-    tasksession.commit()
+    if object_to_delete:
+        tasksession.delete(object_to_delete)
+        tasksession.commit()
     print("Закрыли сессию")
+
 
 
 @app.route("/")
@@ -123,16 +149,95 @@ def sql_task():
             connection = sqlite3.connect(f'db/temp/{session_id}.db')
             cursor = connection.cursor()
             cursor.execute(raw_sql)
-            row = cursor.fetchone()
+            rows = cursor.fetchall()
+            if rows:
+                message = "<br>".join([str(r) for r in rows])
+            else:
+                message = "Ничего не найдено."
+            cursor.close()
             connection.close()
-            print(row)
         except Exception as e:
             return render_template(
                 f'sql_{template_type}.html', task=task, start_time=session_object.last_activity, message=f"SQL error: {e}"
             )
-        if row:
-            message = row
     return render_template(f"sql_{template_type}.html", task=task, start_time=session_object.last_activity, message=message)
+
+@app.route("/cxsstask")
+def create_xss_task():
+    session_id = str(uuid.uuid4()).replace('-', '')
+    print(session_id)
+    rflag = "FLAG{" + ''.join(random.choices(string.ascii_letters + string.digits, k=10)) + "}"
+    task_type = random.choice(["reflected", "stored", "dom"])
+    if task_type == "stored":
+        task_descr = "Добавьте отзыв так, чтобы при просмотре сообщения у вас отобразился код."
+        create_stored_template(session_id)
+    elif task_type == "reflected":
+        task_descr = "Вставьте payload в незащищенное поле ввода, чтобы страница отобразила код."
+    else:
+        task_descr = "Используйте fragment/hash в URL (после #) для выполнения payload и получения кода."
+
+    try:
+        create_session(session_id=session_id, task=task_descr, flag=rflag)
+    except:
+        print('ошибка в создании сессии')
+        tasksession.rollback()
+        raise
+    else:
+        tasksession.commit()
+
+    session["session_id"] = session_id
+    session["task_type"] = task_type
+
+    return redirect(url_for("xss_task"))
+
+@app.route("/xss", methods=['GET', 'POST'])
+def xss_task():
+    session_id = session.get("session_id")
+    if not session_id:
+        return redirect(url_for("create_xss_task"))
+    session_object = get_by_sessionid(session_id=session_id)
+    if not session_object:
+        closeSession(session_id)
+        return redirect(url_for("lose"))
+    
+    task = session_object.task
+    iflag = request.form.get("flag")
+    print(task)
+    print(session_object.flag)
+    if iflag == session_object.flag:
+        closeSession(session_id)
+        return redirect(url_for("win"))
+    
+    task_type = session["task_type"]
+
+    if task_type == "stored":
+        rate = request.form.get("rate")
+        connection = sqlite3.connect(f'db/temp/{session_id}.db')
+        cursor = connection.cursor()
+        if rate:
+            cursor.execute("INSERT INTO rates (content) VALUES (?);", (rate,))
+            connection.commit()
+        
+        cursor.execute("SELECT content FROM rates")
+        rows = cursor.fetchall()
+        rates = [row[0] for row in rows]
+
+        cursor.close()
+        connection.close()
+
+        return render_template("xss_stored.html", task=task, start_time=session_object.last_activity, xss_flag = session_object.flag, rates = rates)
+    elif task_type == "reflected":
+        query = request.args.get("query", "")
+        connection = sqlite3.connect(f'db/temp/{session_id}.db')
+        connection.close()
+
+        return render_template("xss_reflected.html", task=task, start_time=session_object.last_activity, query=query, xss_flag = session_object.flag)
+
+    elif task_type == "dom":
+        connection = sqlite3.connect(f'db/temp/{session_id}.db')
+        connection.close()
+
+        return render_template("xss_dom.html", task=task, start_time=session_object.last_activity, xss_flag = session_object.flag)
 
 @app.route("/win")
 def win():

@@ -1,0 +1,48 @@
+body {
+  margin: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+  color: #fff;
+  text-align: center;
+}
+
+body.win {
+  background: linear-gradient(135deg, #16a34a, #4ade80);
+}
+
+body.lose {
+  background: linear-gradient(135deg, #dc2626, #f87171);
+}
+
+.result-box {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 40px 60px;
+  border-radius: 14px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+h1 {
+  font-size: 48px;
+  margin: 0 0 10px;
+}
+
+p {
+  font-size: 18px;
+  margin-bottom: 30px;
+}
+
+.btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: background 0.2s;
+}
+
+.btn:hover {
+  background: rgba(255, 255, 255, 0.35);
+}

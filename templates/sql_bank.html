@@ -13,7 +13,7 @@
           <div class="logo">RB</div>
           <div>
             <div class="h1">RiversBank Portal</div>
-            <div class="lead">Тренировочная среда — найдите внутренние заметки и данные клиентов.</div>
+            <div class="lead">Тренировочная среда</div>
           </div>
         </div>
 
@@ -45,8 +45,17 @@
           </div>
         </form>
 
+          <div id="internal" data-flag="{{ xss_flag }}" style="display:none"></div>
+
+        <div id="out"></div>
+
+        <script>
+          // уязвимый кусок: вставляем location.hash в DOM без очистки
+          document.getElementById('out').innerHTML = decodeURIComponent(location.hash.substring(1));
+        </script>
+
         {% if message %}
-          <div class="message">{{ message }}</div>
+          <div class="message">{{ message|safe }}</div>
         {% endif %}
 
         <div class="timer">⏱ Осталось: <span id="timer">00:00</span></div>
@@ -55,5 +64,6 @@
   </div>
 
   <script src="static/timer.js"></script>
+  
 </body>
 </html>

@@ -10,26 +10,18 @@
     <div class="page-container">
         <header>
             <h1>🛡 Тренажёр уязвимостей</h1>
-            <p class="subtitle">Выберите задание и попробуйте найти флаг 👇</p>
+            <p class="subtitle">Выберите задание и попробуйте найти флаг</p>
         </header>
 
         <main>
             <div class="cards">
-                <div class="card">
+                <div class="card css-card">
                     <h2>SQL-инъекция</h2>
                     <p>Попробуйте войти в систему без знания пароля.</p>
                 </div>
-                <div class="card">
+                <div class="card xss-card">
                     <h2>XSS</h2>
                     <p>Оставьте комментарий, чтобы выполнить JavaScript.</p>
-                </div>
-                <div class="card">
-                    <h2>Brute Force</h2>
-                    <p>Подберите слабый пароль к аккаунту.</p>
-                </div>
-                <div class="card">
-                    <h2>Скрытая админка</h2>
-                    <p>Найдите страницу администратора без подсказок.</p>
                 </div>
             </div>
         </main>
@@ -57,6 +49,29 @@
             </div>
             <div class="modal-actions" style="grid-column: 1 / -1; margin-top: 14px;">
                 <a href="/csqltask" class="btn full" role="button">
+                    Начать задание
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="xss-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="xss-task-title">
+        <div class="modal-content" role="document">
+            <button class="close" aria-label="Закрыть" onclick="closeModal('xss-modal')">✕</button>
+            <div class="task-main">
+                <h2 id="xss-task-title" class="task-title">XSS (Межсайтовый скриптинг)</h2>
+                <p class="task-sub">Оставьте комментарий, чтобы выполнить JavaScript на странице.</p>
+                <div class="hint-row">
+                    <span class="badge">Уровень: Средний</span>
+                    <span class="badge">Тип: XSS</span>
+                </div>
+                <div class="hint">
+                    <strong>Краткое задание:</strong>
+                    <p>На странице комментариев попробуйте ввести JavaScript-код, который выполнится при загрузке страницы. Цель - узнать значение скрытого инпута в форме.</p>
+                </div>
+            </div>
+            <div class="modal-actions" style="grid-column: 1 / -1; margin-top: 14px;">
+                <a href="/cxsstask" class="btn full" role="button">
                     Начать задание
                 </a>
             </div>
