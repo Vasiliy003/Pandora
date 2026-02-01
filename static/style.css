@@ -225,6 +225,22 @@ footer {
     padding-top: 6px;
 }
 
+.card-help-btn {
+  padding: 8px 14px;
+  background: transparent;
+  border: 1px solid rgba(255,159,28,0.08);
+  border-radius: 10px;
+  color: #ff9f1c;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.card-help-btn:hover {
+  background: linear-gradient(90deg, rgba(255,159,28,0.12), rgba(255,210,140,0.06));
+  color: #ffd29b;
+}
+
 /* Кнопка "Начать задание" под стиль модалки */
 .btn.full {
     display: inline-flex;

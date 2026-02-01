@@ -1,83 +1,49 @@
-function openCssModal() {
-  const modal = document.getElementById("modal");
-  if (modal) {
-    modal.style.display = "flex";
-    setTimeout(() => {
-      const flagInput = document.getElementById("flagInput");
-      if (flagInput) flagInput.focus();
-    }, 200);
-  }
-}
-
-function closeCssModal() {
-  const modal = document.getElementById("modal");
-  if (modal) modal.style.display = "none";
-}
-
-// Открытие модального окна по клику на любую карточку
-document.querySelectorAll('.css-card').forEach(card => {
-  card.addEventListener('click', openCssModal);
-});
-
-// Закрытие при клике вне контента
-document.addEventListener("click", function (e) {
-  const modal = document.getElementById("modal");
+// Универсальные функции для работы с модалками
+function openModal(id = 'modal') {
+  const modal = document.getElementById(id);
   if (!modal) return;
-  if (modal.style.display !== "flex") return;
-  const content = modal.querySelector(".modal-content");
-  if (!content) return;
-  if (!content.contains(e.target) && !e.target.classList.contains("card")) {
-    closeCssModal();
-  }
-});
+  modal.style.display = 'flex';
+  // Ставим фокус на инпут с id "flagInput", если он есть внутри модалки
+  setTimeout(() => {
+    const flagInput = modal.querySelector('#flagInput') || document.getElementById('flagInput');
+    if (flagInput) flagInput.focus();
+  }, 200);
+}
 
-// Закрытие по Escape
-document.addEventListener("keydown", function (e) {
-  if (e.key === "Escape") closeCssModal();
-});
+function closeModal(id = 'modal') {
+  const modal = document.getElementById(id);
+  if (modal) modal.style.display = 'none';
+}
 
+// Обратная совместимость: старые имена оставляем как обёртки
+function openCssModal() { openModal('modal'); }
+function closeCssModal() { closeModal('modal'); }
+function openXssModal() { openModal('xss-modal'); }
+function closeXssModal() { closeModal('xss-modal'); }
+
+window.openModal = openModal;
+window.closeModal = closeModal;
 window.openCssModal = openCssModal;
 window.closeCssModal = closeCssModal;
-
-// Для xss
-
-function openXssModal() {
-  const modal = document.getElementById("xss-modal");
-  if (modal) {
-    modal.style.display = "flex";
-    setTimeout(() => {
-      const flagInput = document.getElementById("flagInput");
-      if (flagInput) flagInput.focus();
-    }, 200);
-  }
-}
-
-function closeXssModal() {
-  const modal = document.getElementById("xss-modal");
-  if (modal) modal.style.display = "none";
-}
-
-// Открытие модального окна по клику на любую карточку
-document.querySelectorAll('.xss-card').forEach(card => {
-  card.addEventListener('click', openXssModal);
-});
-
-// Закрытие при клике вне контента
-document.addEventListener("click", function (e) {
-  const modal = document.getElementById("xss-modal");
-  if (!modal) return;
-  if (modal.style.display !== "flex") return;
-  const content = modal.querySelector(".modal-content");
-  if (!content) return;
-  if (!content.contains(e.target) && !e.target.classList.contains("card")) {
-    closeXssModal();
-  }
-});
-
-// Закрытие по Escape
-document.addEventListener("keydown", function (e) {
-  if (e.key === "Escape") closeXssModal();
-});
-
 window.openXssModal = openXssModal;
 window.closeXssModal = closeXssModal;
+
+// Клик по карточкам открывает соответствующие модалки
+document.querySelectorAll('.css-card').forEach(card => {
+  card.addEventListener('click', () => openModal('modal'));
+});
+document.querySelectorAll('.xss-card').forEach(card => {
+  card.addEventListener('click', () => openModal('xss-modal'));
+});
+
+// Умное закрытие по Escape: скрываем все видимые модалки
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal').forEach(modal => {
+      const style = window.getComputedStyle(modal);
+      if (style && style.display !== 'none') modal.style.display = 'none';
+    });
+  }
+});
+
+// Примечание: закрытие по клику вне модалки явно отключено по дизайну — по требованию пользователя.

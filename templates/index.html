@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <title>Главная — Тренажёр уязвимостей</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='help.css') }}">
     <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='help.js') }}" defer></script>
 </head>
 <body>
     <div class="page-container">
@@ -47,6 +49,9 @@
                     <p>На странице /login попробуйте в поле "username" вставить специальные символы или выражение, чтобы обойти проверку.</p>
                 </div>
             </div>
+            <button type="button" class="card-help-btn" onclick="openHelpModal(event)">
+                Как это работает?
+            </button>
             <div class="modal-actions" style="grid-column: 1 / -1; margin-top: 14px;">
                 <a href="/csqltask" class="btn full" role="button">
                     Начать задание
@@ -70,6 +75,9 @@
                     <p>На странице комментариев попробуйте ввести JavaScript-код, который выполнится при загрузке страницы. Цель - узнать значение скрытого инпута в форме.</p>
                 </div>
             </div>
+            <button type="button" class="card-help-btn" onclick="openHelpModalXss(event)">
+                Как это работает?
+            </button>
             <div class="modal-actions" style="grid-column: 1 / -1; margin-top: 14px;">
                 <a href="/cxsstask" class="btn full" role="button">
                     Начать задание
@@ -77,5 +85,114 @@
             </div>
         </div>
     </div>
+
+    <!-- МОДАЛКА с обучением -->
+    <div id="helpModal" class="help-modal">
+        <div class="help-modal-content">
+
+            <div class="help-modal-header">
+            <span>Справка по заданию</span>
+            <button class="help-close" onclick="closeHelpModal()">✕</button>
+            </div>
+
+            <div class="help-slides">
+
+            <div class="help-slide active">
+                <h3>Что такое SQL-инъекция</h3>
+                <p>SQL‑инъекция — уязвимость, при которой входные данные пользователя попадают в SQL‑запрос без надёжной проверки и могут изменить его поведение.</p>
+            </div>
+
+            <div class="help-slide">
+                <h3>Почему SQL-инъекция опасна?</h3>
+                <p><strong>При успешной SQL-инъекции можно:</strong></p>
+                <ul>
+                  <li>получить доступ к конфиденциальным данным.</li>
+                  <li>обходить аутентификацию.</li>
+                  <li>читать содержимое таблиц.</li>
+                  <li>изменять или удалять данные.</li>
+                </ul>
+                <p>Даже одна уязвимая форма может скомпрометировать весь сайт.</p>
+            </div>
+
+            <div class="help-slide">
+                <h3>Как работает SQL-инъекция?</h3>
+                <p><strong>Обычно атака строится следующим образом:</strong></p>
+                <ul>
+                  <li>Пользователь вводит данные в форму.</li>
+                  <li>Данные без проверки подставляются в SQL‑запрос.</li>
+                  <li>База данных выполняет изменённый запрос.</li>
+                </ul>
+                <p>Таким образом, ввод может изменить условия запроса или его структуру.</p>
+            </div>
+
+            <div class="help-slide">
+                <h3>На что обратить внимание в задании?</h3>
+                <p><strong>При выполнении задания стоит проверить:</strong></p>
+                <ul>
+                  <li>какие поля принимают пользовательский ввод.</li>
+                  <li>используются ли кавычки в запросе.</li>
+                  <li>сколько столбцов возвращает запрос.</li>
+                  <li>есть ли возможность изменить логику условия.</li>
+                </ul>
+                <p>Также обратите внимание, что имена таблиц и полей могут быть случайными.</p>
+            </div>
+
+            <div class="help-footer">
+            <button onclick="prevSlide()">←</button>
+            <span id="slideIndicator">1 / 4</span>
+            <button onclick="nextSlide()">→</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- XSS -->
+    <div id="helpModalXss" class="help-modal">
+        <div class="help-modal-content">
+
+            <div class="help-modal-header">
+            <span>Справка по XSS</span>
+            <button class="help-close" onclick="closeHelpModalXss()">×</button>
+            </div>
+
+            <div class="help-slides">
+
+            <div class="help-slide-xss active">
+                <h3>Что такое XSS</h3>
+                <p>XSS (межсайтовый скриптинг) — уязвимость, когда вредоносный JavaScript попадает на страницу и выполняется в браузере других пользователей.</p>
+            </div>
+
+            <div class="help-slide-xss">
+                <h3>Почему это опасно</h3>
+                <p>При успешной XSS-атаки злоумышленник может:</p>
+                <ul>
+                  <li>украсть сессионные данные или куки</li>
+                  <li>перехватывать ввод пользователя и совершать операции от его имени</li>
+                  <li>перенаправлять на фишинговые страницы</li>
+                </ul>
+            </div>
+
+            <div class="help-slide-xss">
+                <h3>На что обращать внимание</h3>
+                <p>При выполнении задания проверьте:</p>
+                <ul>
+                  <li>какие поля обрабатывают ваш ввод</li>
+                  <li>в каком контексте вставляются данные (HTML, атрибуты, JS, URL)</li>
+                  <li>есть ли фильтрация или экранирование</li>
+                  <li>используются ли политики CSP</li>
+                </ul>
+            </div>
+
+            </div>
+
+            <div class="help-footer">
+            <button onclick="prevXssSlide()">←</button>
+            <span id="slideIndicatorXss">1 / 3</span>
+            <button onclick="nextXssSlide()">→</button>
+            </div>
+
+        </div>
+    </div>
+
 </body>
 </html>
